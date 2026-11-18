@@ -87,6 +87,9 @@ a{color:var(--aqua)}
 .btn-ghost{background:transparent;color:var(--hero-fg);border-color:rgba(238,244,246,.35)}
 .btn-ghost:hover{border-color:var(--hero-fg)}
 .btn svg{width:16px;height:16px}
+.for{display:inline-flex;align-items:center;gap:9px;margin:0 0 16px;padding:6px 14px 6px 10px;border-radius:999px;border:1px solid rgba(242,181,29,.55);background:rgba(242,181,29,.09);color:var(--hero-fg);font-size:.86rem;max-width:100%}
+.for svg{width:15px;height:15px;stroke:var(--gold);flex:none}
+.for b{color:var(--gold);font-weight:600}
 
 .portrait{position:relative;justify-self:center;width:min(100%,400px)}
 .portrait .frame{position:relative;aspect-ratio:4/5;max-width:100%;border-radius:200px 200px 14px 14px;overflow:hidden;background:linear-gradient(160deg,#12324a,#0a1a2a);box-shadow:0 30px 60px -20px rgba(0,0,0,.6)}
@@ -242,6 +245,7 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px}
 <header class="hero" id="top">
   <div class="wrap">
     <div>
+      <p class="for" id="for" hidden><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z" opacity="0"/><path d="M3 7l9 6 9-6"/><rect x="3" y="5" width="18" height="14" rx="2"/></svg><span>Prepared for <b id="for-name"></b></span></p>
       <p class="eyebrow rise d1">Curriculum Vitae · Freeport, Grand Bahama</p>
       <h1 class="name rise d2">D'Angelo<span>Carey</span></h1>
       <p class="role rise d3">Audit &amp; Cost Control · <em>F&amp;B, Revenue &amp; Inventory</em></p>
@@ -536,6 +540,25 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px}
   var secs=links.map(function(a){return document.querySelector(a.getAttribute('href'))});
   function spy(){var y=scrollY+120,cur=null;secs.forEach(function(s,i){if(s&&s.getBoundingClientRect().top+scrollY<=y)cur=i});links.forEach(function(a,i){a.classList.toggle('on',i===cur)})}
   addEventListener('scroll',spy,{passive:true});spy();
+})();
+/* Personal links: #trevor (short alias) or #for-firstname-lastname shows "Prepared for …".
+   Section anchors (#experience etc.) never trigger it, and once shown it stays while the visitor clicks around. */
+(function(){
+  var ALIAS={trevor:'Trevor Edgecombe'};
+  var SECTIONS=['top','glance','experience','strengths','education','hiring','contact','contact-docs'];
+  function apply(){
+    var h='';try{h=decodeURIComponent((location.hash||'').slice(1)).toLowerCase()}catch(e){}
+    if(!h||SECTIONS.indexOf(h)>-1)return;
+    var name=ALIAS[h];
+    if(!name&&/^for-[a-z]+(-[a-z]+){0,3}$/.test(h)){
+      name=h.slice(4).split('-').map(function(w){return w.charAt(0).toUpperCase()+w.slice(1)}).join(' ');
+    }
+    if(!name)return;
+    document.getElementById('for-name').textContent=name;
+    document.getElementById('for').hidden=false;
+    document.title="D'Angelo Carey CV · for "+name;
+  }
+  apply();addEventListener('hashchange',apply);
 })();
 </script>
 </body>
